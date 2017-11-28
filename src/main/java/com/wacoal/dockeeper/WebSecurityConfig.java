@@ -2,7 +2,9 @@ package com.wacoal.dockeeper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.encoding.BasePasswordEncoder;
 import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,25 +29,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
     
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) 
-            throws Exception {
-        auth
-            .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
-    }
-
-//    @Override
-//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) 
+//            throws Exception {
 //        auth
-//                .ldapAuthentication()
-//                .userDnPatterns("uid={0},ou=people")
-//                .groupSearchBase("ou=groups")
-//                .contextSource()
-//                .url("ldap://localhost:8389/dc=springframework,dc=org")
+//            .inMemoryAuthentication()
+//                .withUser("user").password("pwd").roles("USER");
+//    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .ldapAuthentication()
+                .userDnPatterns("uid={0}, ou=user")
+//                .groupSearchBase("ou=user")
+                .contextSource()
+                .url("ldap://10.11.9.135:389/dc=wacoal,dc=co,dc=th");
+//                .managerPassword("{1}");
 //                .and()
 //                .passwordCompare()
-//                .passwordEncoder(new LdapShaPasswordEncoder())
+////                .passwordEncoder(new Lda)
+////                .passwordEncoder(new LdapShaPasswordEncoder())
+//                .passwordEncoder(new Md5PasswordEncoder())
 //                .passwordAttribute("userPassword");
-//    }
+    }
 }
